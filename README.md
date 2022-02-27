@@ -3,15 +3,15 @@
 ## By Huan Le
 
 # Table of Contents
-* #### [Introduction](#Intro)
-* #### [Components](#Comp)
-* #### [Implementation](#Impl)
-* #### [Demonstration](#Demo)
-* #### [Reference](#Ref)
----
-## [Introduction](#Intro)
+* [Introduction](#Introduction)
+* [Components](#Components)
+* [Implementation](#Implementation)
+* [Demonstration](#Demonstration)
+* [Reference](#Reference)
+--------------------
+## [Introduction]
 This is an Arduino adaption of the classic carnival game Buzzer Wire.  The idea came from an episode of Mr. Bean comedy show where Mr. Bean cheated in the Buzzer Wire game in a carnival. The concept is to move a copper wire loop along another copper wire "maze" without touching it and reach the end as soon as possible.
-## [Components](#Comp)
+## [Components]
 * 1 x Arduino Uno R3
 * 1 x Breadboard
 * 1 x Copper Wire
@@ -21,8 +21,8 @@ This is an Arduino adaption of the classic carnival game Buzzer Wire.  The idea 
 * 2 x LED (Red & Green)
 * 2 x Push Button
 
-## [Implementation](#Impl)
+## [Implementation]
 
-## [Demonstration](#Demo)
+## [Demonstration]
 
-## [Reference](#Ref)
+## [Reference]
