@@ -1,28 +1,42 @@
-void displayNum(int num) {
-  displayDigit(-1, false);
-  selectDigit(4);
-  displayDigit(num/1000, false);
-  displayDigit(-1, false);
-  selectDigit(3);
-  displayDigit(num%1000/100, false);
-  displayDigit(-1, false);
-  selectDigit(2);
-  displayDigit(num%100/10, true);
-  displayDigit(-1, false);
-  selectDigit(1);
-  displayDigit(num%10/1, false);
+void display_lose() {
+  for(int i = 0; i < 4; i++)
+    digitalWrite(digits[i], HIGH);
+  for(int i = 0; i < 6; i++)
+    digitalWrite(segments[i], HIGH);
+  digitalWrite(segments[6], LOW);
+}
+
+void display_win() {
+  if(!is_blink)
+    display_num(timer);
+  else
+    clear_display();
+}
+void display_num(int num) {
+  display_digit(-1, false);
+  select_digit(4);
+  display_digit(num/1000, false);
+  display_digit(-1, false);
+  select_digit(3);
+  display_digit(num%1000/100, false);
+  display_digit(-1, false);
+  select_digit(2);
+  display_digit(num%100/10, true);
+  display_digit(-1, false);
+  select_digit(1);
+  display_digit(num%10/1, false);
 }
 
 // Clear display before update
-void clearDisplay() {
+void clear_display() {
   for (int i = 1; i <= 4; i++) {
-    selectDigit(i);
+    select_digit(i);
     for (int j = 0; j < 7; j++)
       digitalWrite(segments[j], HIGH);
   }
 }
 
-void selectDigit(int digit) {
+void select_digit(int digit) {
   switch (digit) {
     case 1:
       digitalWrite(digits[0], HIGH);
@@ -52,7 +66,7 @@ void selectDigit(int digit) {
 }
 
 // Display one digit
-void displayDigit(int num, bool decimal) {
+void display_digit(int num, bool decimal) {
   if (decimal)
     digitalWrite(segments[7], LOW);
   else

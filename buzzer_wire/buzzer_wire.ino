@@ -25,32 +25,141 @@
  * SOFTWARE.
  * 
  */
-int segments[] = {2,3,4,5,6,7,8,13};
-int digits[] = {12,11,10,9};
-int trigger = A1;
-int count = 0;
-unsigned long lastInc = 0;
+ 
+#include <LiquidCrystal_I2C.h>                                                         
+#include <Wire.h>
 
+// Initialize game state
+const uint8_t INIT = 0;
+const uint8_t GAME = 1;
+const uint8_t WIN  = 2;
+const uint8_t LOST = 3;
+uint8_t game_state;
+
+// Declare timer for scoring and other delays
+int timer;
+unsigned long last_timer;
+unsigned long last_check;
+unsigned long last_blink;
+bool is_blink = true;
+uint8_t blink_time;
+unsigned long last_tone;
+uint8_t tone_index;
+
+// Declare start and stop pins
+uint8_t start_input;
+uint8_t stop_input;
+
+// Declare number of hearts
+uint8_t heart_count;
+
+// Declare boolean for writing to lcd
+bool show = true;
+
+// Setting up pins
+LiquidCrystal_I2C lcd(0x27,20,4);
+const uint8_t segments[8]  = {2,3,4,5,6,7,8,13};
+const uint8_t digits[4]    = {12,11,10,9};
+const uint8_t left        = A3;
+const uint8_t right       = A2;
+const uint8_t wire        = A1;
+const uint8_t buzzer      = A0;
+const uint8_t green       = 1;
+const uint8_t red         = 0;
+
+// Create special chars for lcd
+uint8_t heart[8] = {
+  B00000,
+  B01010,
+  B11111,
+  B11111,
+  B01110,
+  B00100,
+  B00000,
+  B00000
+};
+uint8_t heart_empty[8] = {
+  B00000,
+  B01010,
+  B10101,
+  B10001,
+  B01010,
+  B00100,
+  B00000,
+  B00000
+};
+
+// Melody for winning and losing
+float win_tone[10] = {523.25, 523.25, 523.25, 523.25, 415.30, 466.16, 523.25, 0, 466.16, 523.25};
+uint16_t win_duration[11] = {0, 133, 133, 133, 400, 400, 400, 133, 133, 133, 1200};
+float lose_tone[8] = {587.33, 554.37, 523.25, 493.883, 0, 493.883, 493.883, 493.883};
+uint16_t lose_duration[9] = {0, 500, 500, 500, 200, 50, 130, 130, 130};
+
+// Setup function
 void setup() {
+  lcd.init();
+  lcd.backlight();
+  lcd.createChar(0, heart);
+  lcd.createChar(1, heart_empty);
   for (int i = 0; i < 8; i++)
     pinMode(segments[i], OUTPUT);
   for (int i = 0; i < 4; i++)
     pinMode(digits[i], OUTPUT);
-  pinMode(trigger, INPUT);
-//  Serial.begin(9600);
+  pinMode(left  , INPUT);
+  pinMode(right , INPUT);
+  pinMode(wire  , INPUT);
+  pinMode(buzzer, OUTPUT);
+  pinMode(red   , OUTPUT);
+  pinMode(green , OUTPUT);
+  digitalWrite(red, HIGH);
+  digitalWrite(green, HIGH);
+  delay(1000);
+  game_state = INIT;
 }
 
-// the loop routine runs over and over again forever:
+// Game loop
 void loop() {
-//  displayNum(count);
-//  if(millis() - lastInc >= 100) {
-//    lastInc = millis();
-//    count++;
-//  }
-//  Serial.println(digitalRead(trigger));
-//  delay(200);
-  if(digitalRead(trigger))
-    displayNum(1111);
-  else
-    displayNum(0)
+  switch(game_state) {
+    case INIT:
+      if (show) {
+        tone(buzzer, 0, 2000);
+        timer = 0;
+        heart_count = 10;
+        digitalWrite(red, HIGH);
+        digitalWrite(green, LOW);
+        lcd_init();
+        display_num(timer);
+        tone_index = 0;
+      }
+      check_input();
+      break;
+    case GAME:
+      display_num(timer);
+      if(millis() - last_timer >= 100) {
+        last_timer = millis();
+        timer++;
+      }
+      check_wire();
+      if (show) {
+        digitalWrite(red, LOW);
+        digitalWrite(green, HIGH);
+        lcd_game();
+      }
+      check_input();
+      break;
+    case WIN:
+      display_win();
+      lcd_win();  
+      tone_win();
+      break;
+    case LOST:
+      if (show) {
+        display_lose();
+        lcd_lose();
+      }
+      tone_lose();
+      break;
+    default:
+      break;
+  }
 }
