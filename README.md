@@ -4,6 +4,8 @@
 ## Author: Huan Le
 ## Date: 05/09/2022
 
+![image](https://user-images.githubusercontent.com/48562065/168334271-ebfb0b38-0e47-485d-90f6-bcd72a58347b.jpg)
+
 # Table of Contents
 
 * [Introduction](#Introduction)
