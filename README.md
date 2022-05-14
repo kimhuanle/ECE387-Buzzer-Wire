@@ -37,7 +37,10 @@ You can clone this repository to test it out by running this command in your wor
 ```
 git clone git@github.com:kimhuanle/ECE387-Buzzer-Wire.git
 ```
-After that open the buzzer-wire.ino file in the buzzer-wire folder, which will open the Arduino IDE. Make sure that you have the ```Wire.h``` and ```LiquidCrystal_I2C.h``` libraries installed in your Arduino library Then, connect your Arduino microcontroller with everything set up and upload the code.
+After that open the buzzer-wire.ino file in the buzzer-wire folder, which will open the Arduino IDE. Make sure that you have the ```Wire.h```, ```LiquidCrystal_I2C.h```,and ```LowPower.h``` libraries installed in your Arduino library Then, connect your Arduino microcontroller with everything set up and upload the code.
+Here are the links to the libraries:
+* [LiquidCrystal_I2C](https://github.com/johnrickman/LiquidCrystal_I2C)
+* [LowPower](https://github.com/rocketscream/Low-Power)
 
 ## Implementation
 * To implement this kid toy, I included 5 main peripherals: LCD, 4-digit-7-segment display, switches(the wires), piezo buzzer, and LEDs.
@@ -50,6 +53,7 @@ After that open the buzzer-wire.ino file in the buzzer-wire folder, which will o
 * To achieve the accuracy of the timer and to run multiple functions concurrently, I have to use the ```millis()``` function instead of the ```delay()``` function.
 
 ## Diagram
+![diagram](https://user-images.githubusercontent.com/48562065/168403196-9660c052-754b-4176-97f7-b7a528960991.png)
 
 ## Demonstration
 [Demo of the Buzzer Wire Game/Toy](https://www.youtube.com/watch?v=JAsqjuH8NDU): This video shows all the compoenents of the game as well as the walkthrough of the gameplay (both lose and win).
