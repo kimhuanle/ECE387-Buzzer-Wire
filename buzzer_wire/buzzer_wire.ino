@@ -25,7 +25,8 @@
  * SOFTWARE.
  * 
  */
- 
+
+#include <LowPower.h>
 #include <LiquidCrystal_I2C.h>                                                         
 #include <Wire.h>
 
@@ -45,6 +46,7 @@ bool is_blink = true;
 uint8_t blink_time;
 unsigned long last_tone;
 uint8_t tone_index;
+unsigned long interrupt;
 
 // Declare start and stop pins
 uint8_t start_input;
@@ -58,11 +60,11 @@ bool show = true;
 
 // Setting up pins
 LiquidCrystal_I2C lcd(0x27,20,4);
-const uint8_t segments[8]  = {2,3,4,5,6,7,8,13};
-const uint8_t digits[4]    = {12,11,10,9};
+const uint8_t segments[8]  = {3,4,5,6,7,8,9,A1};
+const uint8_t digits[4]    = {13,12,11,10};
 const uint8_t left        = A3;
 const uint8_t right       = A2;
-const uint8_t wire        = A1;
+const uint8_t wire        = 2;
 const uint8_t buzzer      = A0;
 const uint8_t green       = 1;
 const uint8_t red         = 0;
@@ -95,8 +97,12 @@ uint16_t win_duration[11] = {0, 133, 133, 133, 400, 400, 400, 133, 133, 133, 120
 float lose_tone[8] = {587.33, 554.37, 523.25, 493.883, 0, 493.883, 493.883, 493.883};
 uint16_t lose_duration[9] = {0, 500, 500, 500, 200, 50, 130, 130, 130};
 
-// Setup function
+/**
+ * Setup function
+ */
 void setup() {
+  CLKPR = 0x80; // (1000 0000) enable change in clock frequency
+  CLKPR = 0x02; // (0000 0001) use clock division factor 4 to reduce the frequency from 16 MHz to 4 MHz
   lcd.init();
   lcd.backlight();
   lcd.createChar(0, heart);
@@ -113,16 +119,30 @@ void setup() {
   pinMode(green , OUTPUT);
   digitalWrite(red, HIGH);
   digitalWrite(green, HIGH);
-  delay(1000);
+  delay(1000/4);
   game_state = INIT;
 }
 
-// Game loop
-void loop() {
+void wakeUp() {
+  interrupt = millis();  
+}
+
+void loop(){
+  attachInterrupt(0, wakeUp, HIGH);
+  LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF); 
+  detachInterrupt(0); 
+  
+  while(!(game_state == INIT && millis() - interrupt >= 5000/4))
+    game();
+}
+
+/**
+ * Game loop
+ */
+void game() {
   switch(game_state) {
     case INIT:
       if (show) {
-        tone(buzzer, 0, 2000);
         timer = 0;
         heart_count = 10;
         digitalWrite(red, HIGH);
@@ -135,7 +155,7 @@ void loop() {
       break;
     case GAME:
       display_num(timer);
-      if(millis() - last_timer >= 100) {
+      if(millis() - last_timer >= 100/4) {
         last_timer = millis();
         timer++;
       }

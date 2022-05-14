@@ -1,3 +1,6 @@
+/**
+ * Displaying welcome message to LCD
+ */
 void lcd_init() {
   lcd.clear();
   lcd.setCursor(5,0);
@@ -11,6 +14,9 @@ void lcd_init() {
   show = false;
 }
 
+/**
+ * Displaying number of hearts during gameplay to LCD
+ */
 void lcd_game() {
   lcd.clear();
   lcd.setCursor(2,0);
@@ -25,13 +31,16 @@ void lcd_game() {
   lcd.setCursor(2,3);
   lcd.print("You will lose!!!");
   if(game_state == LOST)
-    delay(500);
+    delay(500/4);
   else
     show = false;
 }
 
+/**
+ * Displaying win message to LCD
+ */
 void lcd_win() {
-  if(millis() - last_blink > 300) {
+  if(millis() - last_blink > 300/4) {
     if(blink_time == 0) {
       lcd.clear();
       lcd.setCursor(2,0);
@@ -62,9 +71,13 @@ void lcd_win() {
     lcd.display();
     show = true;
     game_state = INIT;
+    interrupt = millis();
   }
 }
 
+/**
+ * Displaying loss message to LCD
+ */
 void lcd_lose() {
   lcd.clear();
   lcd.setCursor(2,0);

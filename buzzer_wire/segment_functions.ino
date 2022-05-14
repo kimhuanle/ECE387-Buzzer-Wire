@@ -1,3 +1,6 @@
+/**
+ * Displaying a horizontal line across 4 digits when losing
+ */
 void display_lose() {
   for(int i = 0; i < 4; i++)
     digitalWrite(digits[i], HIGH);
@@ -6,12 +9,19 @@ void display_lose() {
   digitalWrite(segments[6], LOW);
 }
 
+/**
+ * Displaying number flashing when winning
+ */
 void display_win() {
   if(!is_blink)
     display_num(timer);
   else
     clear_display();
 }
+
+/**
+ * Displaying a 4-digit number to 4-digit-segment-display
+ */
 void display_num(int num) {
   display_digit(-1, false);
   select_digit(4);
@@ -27,7 +37,9 @@ void display_num(int num) {
   display_digit(num%10/1, false);
 }
 
-// Clear display before update
+/**
+ * Clearing 4-digit-segment-display
+ */
 void clear_display() {
   for (int i = 1; i <= 4; i++) {
     select_digit(i);
@@ -36,6 +48,9 @@ void clear_display() {
   }
 }
 
+/**
+ * Selecting the digit to display on the 4-digit-segment-display
+ */
 void select_digit(int digit) {
   switch (digit) {
     case 1:
@@ -65,7 +80,9 @@ void select_digit(int digit) {
   }
 }
 
-// Display one digit
+/**
+ * Displaying one digit to the 4-digit-segment display
+ */
 void display_digit(int num, bool decimal) {
   if (decimal)
     digitalWrite(segments[7], LOW);
