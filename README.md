@@ -73,6 +73,7 @@ Below is the wiring diagram of the whole game
 
 ## Demonstration
 [Demo of the Buzzer Wire Game/Toy](https://www.youtube.com/watch?v=JAsqjuH8NDU): This video shows all the compoenents of the game as well as the walkthrough of the gameplay (both lose and win).
+[Demo of Power Reduction](https://www.youtube.com/watch?v=m-7YVLOgvag): This video shows what it looks like the the power reduction technique is applied.
 
 ## Power Reduction Technique
 * For this project, I decided to implement the power reduction technique to make it more viable for actual production. To do so, I chose to reduce the clock speed by 1/4 from 16MHz to 4MHz and implement sleeping meachanism for the game.
