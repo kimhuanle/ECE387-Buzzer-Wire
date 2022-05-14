@@ -15,7 +15,7 @@
 * [Process](#Process)
 * [Diagram](#Diagram)
 * [Demonstration](#Demonstration)
-* [Reference](#Reference)
+* [Power Reduction Technique](#Power-Reduction-Technique)
 --------------------
 ## Introduction
 This is an Arduino adaption of the classic carnival game Buzzer Wire. The idea came from an episode of Mr. Bean comedy show where Mr. Bean cheated in the Buzzer Wire game in a carnival. The concept is to move a copper wire loop along another copper wire "maze" without touching it and reach the end as soon as possible. In my version, you will have 10 hearts to play the game. Each time you touch the wire, you lose one heart. You have 400 milliseconds cooldown when touching the wire so that you do not lose another heart for your slow reaction 😂. The game has an LCD to display game message, a 4-digit-7-segment display to dislay the timer, a piezo buzzer that makes noise when you touch the wire and when the game ends, and two LEDs to indicate the game state.
