@@ -54,6 +54,9 @@ Here are the links to the libraries:
 
 ## Diagram
 ![diagram](https://user-images.githubusercontent.com/48562065/168403196-9660c052-754b-4176-97f7-b7a528960991.png)
+- The button on the right represents when the ring touches the wire maze
+- The button in the middle represents whne the ring touches the start wire
+- The button on the left represents when the ring touches the stop wire
 
 ## Demonstration
 [Demo of the Buzzer Wire Game/Toy](https://www.youtube.com/watch?v=JAsqjuH8NDU): This video shows all the compoenents of the game as well as the walkthrough of the gameplay (both lose and win).
