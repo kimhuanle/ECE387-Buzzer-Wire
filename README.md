@@ -12,6 +12,7 @@
 * [Components](#Components)
 * [Installation](#Installation)
 * [Implementation](#Implementation)
+* [Process](#Process)
 * [Diagram](#Diagram)
 * [Demonstration](#Demonstration)
 * [Reference](#Reference)
@@ -52,7 +53,19 @@ Here are the links to the libraries:
 * In state ```LOST```, I print the losing message on the LCD, and play the loss melody on the piezo buzzer.
 * To achieve the accuracy of the timer and to run multiple functions concurrently, I have to use the ```millis()``` function instead of the ```delay()``` function.
 
+##  Process
+* Though this project took me only 1 week to complete, it requires a long and cumbersome process of problem solving.
+* First, I had to figure out how to detect the wire touch during the game, and to start and stop the timer. For this, I recalled researching about the switch and decided to emulate the pushbutton behavior on the 3 wires. I connected the start wire, the stop wire, and the maze wire such that they simulate one end of a pushbutton that is pulled down though a 10kΩ resistor and connected the wire ring to 5V VCC.
+* The second problem that I had to solve involved displaying a timer on the 4-digit-7-segment display. To tackle this, I did some research on how the digits are selected and how to turn on each segment of the 7 segments. I created 3 functions to properly display a 4 digit number to the display. The first one will take in a number from 0 to 9 to display a digit. The second one takes in a number from 1 to 4 to select the placement of the digit being displayed. The third one takes in a number and display the last 4 digits of that number by cycling through them and select the corresponding placement and displaying the corresponding digit.
+* The I2C LCD is another problem that I had to solve. This was fairly easy as I only needed to include an already written library from the Arduino forum.
+* I also had to create 2 functions to detect the maze wire touch during the game as well as the wire touch to start and stop the game.
+* For the buzzer, I simply had to use the tone and find 2 melodies for the win and loss state of the game.
+* Another important part of the project was the finite state machine. For that, I chose the polling method to check for inputs and determine which state the game is in. The finite state machine is fairly simple. The game starts with the INIT state, then moves on to the GAME state. During the GAME state, I constantly check if the stop wire is touched to switch to the WIN state or if the number of hearts has reached 0 to switch to the LOSS state. The WIN and LOSS state call different functions to display different visuals to the LCD and the 4-digit-7-segment display, and play the corresponding melody.
+* The trickiest part of all is to use the ```millis()``` function to keep track of the timer, display to the LCD and the 4-digit-7-segment-display, and play the melody concurrently.
+
 ## Diagram
+Below is the wiring diagram of the whole game
+
 ![diagram](https://user-images.githubusercontent.com/48562065/168403196-9660c052-754b-4176-97f7-b7a528960991.png)
 - The button on the right represents when the ring touches the wire maze
 - The button in the middle represents whne the ring touches the start wire
@@ -60,3 +73,19 @@ Here are the links to the libraries:
 
 ## Demonstration
 [Demo of the Buzzer Wire Game/Toy](https://www.youtube.com/watch?v=JAsqjuH8NDU): This video shows all the compoenents of the game as well as the walkthrough of the gameplay (both lose and win).
+
+## Power Reduction Technique
+* For this project, I decided to implement the power reduction technique to make it more viable for actual production. To do so, I chose to reduce the clock speed by 1/4 from 16MHz to 4MHz and implement sleeping meachanism for the game.
+  * To reduce the clock speed of the Arduino, I added these two line to the setup function
+
+        CLKPR = 0x80; // (1000 0000) enable change in clock frequency
+        CLKPR = 0x02; // (0000 0001) use clock division factor 4 to reduce the frequency from 16 MHz to 4 MHz
+    I also had to adjust the timing by dividing every delay by 4.
+  * To implement the sleeping mechanism, I used the ```LowPower.h``` library available on the Arduino Forum. I used the maze wire as an external interrupt to enable the game. When no body touches the wire for 5 seconds before the game starts, the Arduino will enter the sleep mode. The Arduino stays sleeping until the maze wire touches the ring wire. Everything was made possible using this piece of code:
+
+        attachInterrupt(0, wakeUp, HIGH);
+        LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF); 
+        detachInterrupt(0); 
+        
+        while(!(game_state == INIT && millis() - interrupt >= 5000/4))
+          game();
